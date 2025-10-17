@@ -2,21 +2,37 @@ import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import net from 'net'; // testa se a porta está livre antes de iniciar
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const DEFAULT_PORT = 3000;
 
-
+const requestedPort = process.env.PORT ? parseInt(process.env.PORT, 10) : DEFAULT_PORT;
 
 app.use(cors());
 app.use(express.json());
 
+// Servir o ícone via rota /icons/icone.png (aponta para assets/icons/icone.png)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.get('/icons/icone.png', (req, res) => {
+    const iconPath = path.join(__dirname, 'assets', 'icons', 'icone.png');
+    res.sendFile(iconPath, (err) => {
+        if (err) {
+            console.error('Erro ao servir /icons/icone.png:', err);
+            res.status(404).end();
+        }
+    });
+});
+
 // Validar e configurar a API do Gemini
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-    console.error('❌ ERRO: GEMINI_API_KEY não encontrada. Verifique seu arquivo .env');
+    console.error(' ERRO: GEMINI_API_KEY não encontrada. Verifique seu arquivo .env');
     process.exit(1);
 }
 
@@ -28,7 +44,7 @@ const model = genAI.getGenerativeModel({
     },
 });
 
-console.log('✅ Cliente Gemini inicializado com sucesso.');
+console.log(' Cliente Gemini inicializado com sucesso.');
 
 app.post('/consulta', async (req, res) => {
     console.log('Recebida nova requisição em /consulta...');
@@ -61,7 +77,7 @@ app.post('/consulta', async (req, res) => {
         res.json(responseObject);
 
     } catch (error) {
-        console.error("❌ Erro no endpoint /consulta:", error);
+        console.error(" Erro no endpoint /consulta:", error);
         res.status(500).json({
             titulo: "Erro Interno",
             resumo: "Desculpe, ocorreu um erro inesperado ao tentar processar sua pergunta.",
@@ -71,7 +87,44 @@ app.post('/consulta', async (req, res) => {
 });
 
 // Iniciar o servidor
-app.listen(port, () => {
-    console.log(`🚀 Servidor da Clara está no ar e rodando em http://localhost:${port}`);
-});
+function isPortFree(port) {
+    return new Promise((resolve) => {
+        const tester = net.createServer()
+            .once('error', (err) => {
+                // EADDRINUSE -> porta ocupada
+                resolve(false);
+            })
+            .once('listening', () => {
+                tester.close();
+                resolve(true);
+            })
+            .listen(port, '0.0.0.0');
+    });
+}
+
+async function findAvailablePort(startPort, maxAttempts = 50) {
+    let port = startPort;
+    for (let i = 0; i < maxAttempts; i++) {
+        const free = await isPortFree(port);
+        if (free) return port;
+        port += 1;
+    }
+    throw new Error(`Nenhuma porta disponível encontrada começando em ${startPort}`);
+}
+
+(async () => {
+    try {
+        const port = await findAvailablePort(requestedPort, 100);
+        app.listen(port, () => {
+            if (port !== requestedPort) {
+                console.log(` Porta ${requestedPort} estava ocupada — inicializado em http://localhost:${port} (porta alternativa)`);
+            } else {
+                console.log(` Servidor da Clara está no ar e rodando em http://localhost:${port}`);
+            }
+        });
+    } catch (err) {
+        console.error(' Erro ao encontrar porta disponível:', err);
+        process.exit(1);
+    }
+})();
 

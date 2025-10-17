@@ -100,15 +100,15 @@ class ClaraChat {
         let formatted = '';
         
         if (response.titulo) {
-            formatted += `<strong>📋 ${response.titulo}</strong><br><br>`;
+            formatted += `<strong>${response.titulo}</strong><br><br>`;
         }
         
         if (response.resumo) {
-            formatted += `<strong>📝 Resumo:</strong><br>${response.resumo}<br><br>`;
+            formatted += `<strong>Resumo:</strong><br>${response.resumo}<br><br>`;
         }
         
         if (response.recomendacao) {
-            formatted += `<strong>💡 Recomendação:</strong><br>${response.recomendacao}`;
+            formatted += `<strong>Recomendação:</strong><br>${response.recomendacao}`;
         }
         
         return formatted || 'Desculpe, não consegui processar sua pergunta.';
@@ -120,7 +120,11 @@ class ClaraChat {
         
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
-        avatar.innerHTML = type === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+        if (type === 'user') {
+            avatar.innerHTML = '<i class="fas fa-user"></i>';
+        } else {
+            avatar.innerHTML = '<img src="assets/icons/icone.png" alt="Clara" />';
+        }
         
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
@@ -147,9 +151,9 @@ class ClaraChat {
         typingDiv.className = 'message clara-message typing-message';
         typingDiv.id = 'typingIndicator';
         
-        const avatar = document.createElement('div');
-        avatar.className = 'message-avatar';
-        avatar.innerHTML = '<i class="fas fa-robot"></i>';
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    avatar.innerHTML = '<img src="assets/icons/icone.png" alt="Clara" />';
         
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';

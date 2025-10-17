@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clara - Assistente Inteligente</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Favicon: SVG preferencial e PNG como fallback -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icone.png">
+    <link rel="shortcut icon" href="assets/icons/icone.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,12 +19,12 @@
         <!-- Cabeçalho -->
         <header class="header">
             <div class="header-content">
-                <div class="clara-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
+                <!-- robô removido conforme pedido -->
                 <div class="clara-info">
-                    <h1>Clara</h1>
-                    <p>Assistente Inteligente</p>
+                    <img src="assets/icons/icone.png" alt="Ícone Clara" class="title-icon">
+                    <div class="clara-texts">
+                        <h1>Clara - Assistente Inteligente</h1>
+                    </div>
                 </div>
                 <div class="status-indicator">
                     <div class="status-dot online"></div>
@@ -35,7 +39,7 @@
                 <!-- Mensagem inicial da Clara -->
                 <div class="message clara-message">
                     <div class="message-avatar">
-                        <i class="fas fa-robot"></i>
+                        <img src="assets/icons/icone.png" alt="Clara" />
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">
@@ -60,5 +64,69 @@
 
     <!-- Script principal -->
     <script src="script.js"></script>
+    <!-- Script para detectar automaticamente o caminho do ícone e aplicar -->
+    <script>
+        (function(){
+            const candidates = [
+                'favicon.svg',
+                'assets/icons/icone.png',
+                'icons/icone.png',
+                '/icons/icone.png',
+                '/assets/icons/icone.png'
+            ];
+
+            function applyIcon(path){
+                // Atualiza imagem no cabeçalho
+                const img = document.querySelector('.title-icon');
+                if (img) img.src = path;
+
+                // Atualiza favicons existentes ou cria novos
+                let links = document.querySelectorAll('link[rel~="icon"]');
+                const isSvg = path.endsWith('.svg');
+                if (!links || links.length === 0) {
+                    const l = document.createElement('link');
+                    l.rel = 'icon'; l.type = isSvg ? 'image/svg+xml' : 'image/png'; l.href = path;
+                    document.head.appendChild(l);
+                } else {
+                    links.forEach(l => { l.href = path; l.type = isSvg ? 'image/svg+xml' : 'image/png'; });
+                }
+            }
+
+            function testNext(i){
+                if (i >= candidates.length) return;
+                const path = candidates[i];
+                const img = new Image();
+                img.onload = function(){ applyIcon(path); };
+                img.onerror = function(){ testNext(i+1); };
+                img.src = path;
+            }
+
+            document.addEventListener('DOMContentLoaded', function(){ testNext(0); });
+        })();
+    </script>
+    <script>
+        // Forçar favicon da aba
+        (function(){
+            const path = 'assets/icons/icone.png';
+            function setFavicon(href){
+                const isSvg = href.endsWith('.svg');
+                let link = document.querySelector('link[rel~="icon"]');
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    document.head.appendChild(link);
+                }
+                link.type = isSvg ? 'image/svg+xml' : 'image/png';
+                link.href = href;
+                // also set shortcut icon for older browsers
+                let sc = document.querySelector('link[rel="shortcut icon"]');
+                if (!sc) {
+                    sc = document.createElement('link'); sc.rel = 'shortcut icon'; document.head.appendChild(sc);
+                }
+                sc.href = href;
+            }
+            document.addEventListener('DOMContentLoaded', () => setFavicon(path));
+        })();
+    </script>
 </body>
 </html>

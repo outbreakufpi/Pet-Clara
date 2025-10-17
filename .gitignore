@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Build outputs
+dist/
+build/
+
+# Misc
+coverage/
+*.tgz
+*.log
+
+# Favicon generated files (optional)
+favicon.ico
+apple-touch-icon.png
+
+# Lockfiles (if you prefer not to commit)
+# package-lock.json
+# yarn.lock

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clara - Assistente Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <header class="header">
+            <div class="header-content">
+                <div class="clara-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="clara-info">
+                    <h1>Clara</h1>
+                    <p>Assistente Inteligente</p>
+                </div>
+                <div class="status-indicator">
+                    <div class="status-dot online"></div>
+                    <span>Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Container do Chat -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Mensagem inicial da Clara -->
+                <div class="message clara-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <p>Olá! Eu sou a Clara. Como posso ajudá-lo hoje?</p>
+                        </div>
+                        <div class="message-time">Agora</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Input -->
+        <footer class="input-area">
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="Digite sua pergunta aqui..." autocomplete="off">
+                <button id="sendButton" class="send-button" title="Enviar Mensagem">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Script principal -->
+    <script src="script.js"></script>
+</body>
+</html>
